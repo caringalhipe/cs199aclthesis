@@ -1,4 +1,4 @@
-//const nx = require('networkx'); find equivalent networkx library
+const jsnx = require('jsnetworkx'); //find equivalent networkx library
 
 function isAllConnected(P, n) {
     for (const p of P) {
@@ -7,7 +7,7 @@ function isAllConnected(P, n) {
             checkVertices[a - 1] = true;
             checkVertices[b - 1] = true;
         }
-        if (!checkVertices.includes(false) && nx.isDirectedAcyclicGraph(new nx.DiGraph(p))) {
+        if (!checkVertices.includes(false) && jsnx.isDirectedAcyclicGraph(new jsnx.DiGraph(p))) {
             continue;
         } else {
             return false;

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Poset Visualization</title>
+    <meta property="og:title" content="Poset Visualization" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <meta property="twitter:card" content="summary_large_image" />
+
+    <style data-tag="reset-style-sheet">
+      html {  line-height: 1.15;}body {  margin: 0;}* {  box-sizing: border-box;  border-width: 0;  border-style: solid;}p,li,ul,pre,div,h1,h2,h3,h4,h5,h6,figure,blockquote,figcaption {  margin: 0;  padding: 0;}button {  background-color: transparent;}button,input,optgroup,select,textarea {  font-family: inherit;  font-size: 100%;  line-height: 1.15;  margin: 0;}button,select {  text-transform: none;}button,[type="button"],[type="reset"],[type="submit"] {  -webkit-appearance: button;}button::-moz-focus-inner,[type="button"]::-moz-focus-inner,[type="reset"]::-moz-focus-inner,[type="submit"]::-moz-focus-inner {  border-style: none;  padding: 0;}button:-moz-focus,[type="button"]:-moz-focus,[type="reset"]:-moz-focus,[type="submit"]:-moz-focus {  outline: 1px dotted ButtonText;}a {  color: inherit;  text-decoration: inherit;}input {  padding: 2px 4px;}img {  display: block;}html { scroll-behavior: smooth  }
+    </style>
+    <style data-tag="default-style-sheet">
+      html {
+        font-family: Inter;
+        font-size: 16px;
+      }
+
+      body {
+        font-weight: 400;
+        font-style:normal;
+        text-decoration: none;
+        text-transform: none;
+        letter-spacing: normal;
+        line-height: 1.15;
+        color: var(--dl-color-gray-black);
+        background-color: var(--dl-color-gray-white);
+
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/animate.css@4.1.1/animate.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
+      data-tag="font"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&amp;display=swap"
+      data-tag="font"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
+      data-tag="font"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&amp;display=swap"
+      data-tag="font"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@teleporthq/teleport-custom-scripts/dist/style.css"
+    />
+  </head>
+  <body>
+    <link rel="stylesheet" href="./style.css" />
+    <div>
+      <link href="./index.css" rel="stylesheet" />
+
+      <div class="home-container">
+        <div class="home-container01">
+          <h1 class="home-text">
+            <span class="home-text1">Poset Visualizer</span>
+            <br />
+          </h1>
+          <div class="home-container02">
+            <button type="button" class="home-button button">
+              <svg viewBox="0 0 1024 1024" class="home-icon">
+                <path
+                  d="M512 854q140 0 241-101t101-241-101-241-241-101-241 101-101 241 101 241 241 101zM512 86q176 0 301 125t125 301-125 301-301 125-301-125-125-301 125-301 301-125zM470 298h84v256h-84v-256zM470 640h84v86h-84v-86z"
+                ></path>
+              </svg>
+              <span class="home-text3">ABOUT</span>
+            </button>
+            <button type="button" class="home-button1 button">
+              <svg viewBox="0 0 877.7142857142857 1024" class="home-icon2">
+                <path
+                  d="M502.857 685.714v91.429c0 10.286-8 18.286-18.286 18.286h-91.429c-10.286 0-18.286-8-18.286-18.286v-91.429c0-10.286 8-18.286 18.286-18.286h91.429c10.286 0 18.286 8 18.286 18.286zM649.143 402.286c0 81.143-56.571 113.143-98.286 136.571-29.714 17.143-48 28-48 46.286v18.286c0 10.286-8 18.286-18.286 18.286h-91.429c-10.286 0-18.286-8-18.286-18.286v-38.857c0-70.286 50.286-92.571 90.857-110.857 34.286-16 55.429-26.857 55.429-52.571 0-33.143-41.714-57.714-79.429-57.714-20 0-41.143 6.286-54.286 15.429-12.571 8.571-24.571 21.143-45.714 47.429-3.429 4.571-8.571 6.857-14.286 6.857-4 0-8-1.143-10.857-3.429l-61.714-46.857c-7.429-5.714-9.143-16.571-4-24.571 46.857-73.714 112.571-109.714 199.429-109.714v0c93.714 0 198.857 74.286 198.857 173.714zM438.857 146.286c-201.714 0-365.714 164-365.714 365.714s164 365.714 365.714 365.714 365.714-164 365.714-365.714-164-365.714-365.714-365.714zM877.714 512c0 242.286-196.571 438.857-438.857 438.857s-438.857-196.571-438.857-438.857 196.571-438.857 438.857-438.857v0c242.286 0 438.857 196.571 438.857 438.857z"
+                ></path>
+              </svg>
+              <span class="home-text4">HELP</span>
+            </button>
+          </div>
+        </div>
+        <div class="home-container03">
+          <div class="home-container04">
+            <div class="home-container05">
+              <div class="home-container06">
+                <div class="home-container07">
+                  <button
+                    id="upload"
+                    name="upload"
+                    type="button"
+                    class="home-button2 button"
+                  >
+                    Upload File
+                  </button>
+                  <div class="home-container08"><span>or</span></div>
+                </div>
+                <input
+                  type="text"
+                  placeholder="placeholder"
+                  class="home-textinput input"
+                />
+              </div>
+              <div class="home-container09">
+                <div class="home-container10"></div>
+                <div class="home-container11">
+                  <span class="home-text6">Log Tracer</span>
+                </div>
+              </div>
+              <div class="home-container12">
+                <div class="home-container13">
+                  <div class="home-container14">
+                    <span class="home-text7">k-Poset Algorithm</span>
+                  </div>
+                </div>
+                <div class="home-container15"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="home-container16"></div>
+      </div>
+    </div>
+  </body>
+</html>
