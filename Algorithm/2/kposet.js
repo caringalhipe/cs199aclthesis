@@ -1,5 +1,5 @@
 // main.js
-const { Pair, generatePoset } = require('./class'); // Import Pair and generatePoset from class.js
+const { Pair, generatePoset } = require('./classes'); // Import Pair and generatePoset from class.js
 const Algorithm2 = require('./getmaximalposet'); // Import Algorithm2 from getmaximalposet.js
 
 function Algorithm3(Y, k) {

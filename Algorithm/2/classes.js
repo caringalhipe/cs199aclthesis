@@ -107,3 +107,33 @@ class Graph {
         this._findAllTopologicalOrders(path, marked, lenNodes);
     }
 }
+
+//TEST
+
+// Define more complex sample data for testing
+const complexRelations = [[1, 2], [2, 3], [3, 4], [4, 5], [1, 3], [1, 4], [2, 4], [2, 5], [3, 5]];
+const complexSequence = [1, 3, 2, 5, 4];
+
+// Instantiate a Poset object with complex relations
+const complexPoset = new Poset(5, complexRelations);
+
+// Test isEmpty method
+console.log("Is complexPoset empty?", complexPoset.isEmpty());
+
+// Test isEqual method
+const complexPoset2 = new Poset(5, complexRelations);
+console.log("Are complexPoset and complexPoset2 equal?", complexPoset.isEqual(complexPoset2));
+
+// Instantiate a LinearOrder object with complex sequence
+const complexLinearOrder = new LinearOrder(complexSequence);
+
+// Test generateLinearExtensions method
+console.log("Linear extensions:", complexLinearOrder.generateLinearExtensions());
+
+// Instantiate a Graph object with complex relations
+const complexGraph = new Graph(complexRelations, 5, []);
+
+// Test getAllTopologicalOrders method
+complexGraph.getAllTopologicalOrders();
+console.log("List of Linear Orders:", complexGraph.listofLO);
+
