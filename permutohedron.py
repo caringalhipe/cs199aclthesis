@@ -23,6 +23,6 @@ for i in range(len(inp)-1):
                   G.add_edge(inp[i], inp[j], label=adjacent)
 
 pos = nx.kamada_kawai_layout(G)
-nx.draw(G, pos, with_labels=True)
+nx.draw(G, pos, with_labels=True, node_color='#FFFFFF', node_size=800)
 nx.draw_networkx_edge_labels(G, pos, edge_labels=nx.get_edge_attributes(G,'label'))
 plt.show()
