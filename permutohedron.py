@@ -12,8 +12,6 @@ def check_swap(str1, str2):
 inp = []
 for i in range(int(input())):
       inp.append(input())
-      
-print(inp)
 
 G = nx.Graph()
 G.add_nodes_from(inp)
