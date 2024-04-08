@@ -6,7 +6,7 @@ def check_swap(str1, str2):
             if str1[i] == str2[i+1] and str1[i+1] == str2[i]:
                   if str1[i+2:] != str2[i+2:]:
                         return None
-                  return f"{str1[i]}, {str2[i]}"
+                  return f"{str(min(int(str1[i]), int(str2[i])))}, {str(max(int(str1[i]), int(str2[i])))}"
       return None
 
 inp = []
@@ -23,6 +23,10 @@ for i in range(len(inp)-1):
                   G.add_edge(inp[i], inp[j], label=adjacent)
 
 pos = nx.kamada_kawai_layout(G)
-nx.draw(G, pos, with_labels=True, node_color='#FFFFFF', node_size=800)
+color_map = []
+for node in G:
+      color_map.append('pink')
+            
+nx.draw(G, pos, with_labels=True, node_size=1000, node_color=color_map, node_shape='s')
 nx.draw_networkx_edge_labels(G, pos, edge_labels=nx.get_edge_attributes(G,'label'))
 plt.show()
