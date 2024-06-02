@@ -7,12 +7,12 @@ from random import shuffle
 
 # Checks if two linear orders have an adjacent swap
 def check_swap(str1, str2):
-    for i in range(len(str1) - 1):
-        if str1[i] == str2[i + 1] and str1[i + 1] == str2[i]:
-            if str1[0:i] + str1[i + 2:] != str2[0:i] + str2[i + 2:]:
-                return None
-            return f"{str(min(int(str1[i]), int(str2[i])))}-{str(max(int(str1[i]), int(str2[i])))}"
-    return None
+      for i in range(len(str1)-1):
+            if str1[i] == str2[i+1] and str1[i+1] == str2[i]:
+                  if str1[0:i] + str1[i+2:] != str2[0:i] + str2[i+2:]:
+                        return None
+                  return f"{str(min(int(str1[i]), int(str2[i])))}, {str(max(int(str1[i]), int(str2[i])))}"
+      return None
 
 # Process input to create a graph and generate a figure
 def process_input(data):
@@ -22,25 +22,64 @@ def process_input(data):
 
     G = nx.Graph()
 
-    # Add nodes and edges based on adjacent swaps
-    for a in range(num_orders):
-        G.add_node(inp[a])
-        for b in range(a + 1, num_orders):
-            pairs = [inp[a][i:i + 2] for i in range(len(inp[a])) if "".join(reversed(inp[a][i:i + 2])) == "".join(inp[b][i:i + 2]) and inp[a][0:i] + inp[a][i + 2:] == inp[b][0:i] + inp[b][i + 2:]]
-            if len(pairs) > 0:
-                G.add_edge(inp[a], inp[b], label=str(sorted([pairs[0][0], pairs[0][1]])))
+    #Add an edge between each node that has an adjacent swap
+    for i in range(num_orders):
+        G.add_node(inp[i])
+        for j in range(i+1, num_orders):
+                adjacent = check_swap(inp[i], inp[j])
+                if adjacent:
+                    G.add_edge(inp[i], inp[j], label=adjacent)
 
+    #Determines the layout of the graph
     pos = nx.kamada_kawai_layout(G)
-    color_map = ['pink' for node in G]
 
-    fig, ax = plt.subplots()
-    nx.draw(G, pos, with_labels=True, node_size=1000, node_color=color_map, node_shape='s', ax=ax)
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=nx.get_edge_attributes(G, 'label'), ax=ax)
+    #Color nodes
+    color_map = []
+    for node in G:
+        color_map.append('pink')
+
+    #Draw and show graph with labels on nodes and edges
+    fig, ax = plt.subplots()      
+    nx.draw(G, pos, with_labels=True, node_size=1000, node_color=color_map)
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=nx.get_edge_attributes(G,'label'))
+
+    return fig
+
+def process_input_shuffle(data):
+    lines = data.strip().split("\n")
+    num_orders = int(lines[0])
+    inp = lines[1:num_orders + 1]
+
+    shuffle(inp)
+    
+    G = nx.Graph()
+
+    #Add an edge between each node that has an adjacent swap
+    for i in range(num_orders):
+        G.add_node(inp[i])
+        for j in range(i+1, num_orders):
+                adjacent = check_swap(inp[i], inp[j])
+                if adjacent:
+                    G.add_edge(inp[i], inp[j], label=adjacent)
+
+    #Determines the layout of the graph
+    pos = nx.kamada_kawai_layout(G)
+
+    #Color nodes
+    color_map = []
+    for node in G:
+        color_map.append('pink')
+
+    #Draw and show graph with labels on nodes and edges
+    fig, ax = plt.subplots()      
+    nx.draw(G, pos, with_labels=True, node_size=1000, node_color=color_map)
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=nx.get_edge_attributes(G,'label'))
 
     return fig
 
 # Load data from file
 def load_from_file():
+    global data
     file_path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
     if file_path:
         with open(file_path, 'r') as file:
@@ -49,6 +88,7 @@ def load_from_file():
 
 # Submit input from textbox
 def submit_input():
+    global data
     data = input_textbox.get("1.0", tk.END)
     display_graph(data)
 
@@ -61,6 +101,19 @@ def display_graph(data):
         widget.destroy()
 
     fig = process_input(data)
+    
+    canvas = FigureCanvasTkAgg(fig, master=plot_frame)
+    canvas.draw()
+    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+    
+def redraw_graph(data):
+    global canvas    
+
+    # Clear previous plot
+    for widget in plot_frame.winfo_children():
+        widget.destroy()
+
+    fig = process_input_shuffle(data)
     
     canvas = FigureCanvasTkAgg(fig, master=plot_frame)
     canvas.draw()
@@ -114,6 +167,9 @@ def create_gui():
     # Add Submit button to left frame
     submit_button = tk.Button(left_frame, text="Submit", command=submit_input)
     submit_button.pack(pady=10)
+    
+    redraw_button = tk.Button(master=left_frame, text="Redraw Graph", command=lambda: redraw_graph(data))
+    redraw_button.pack(pady=10)
 
     root.mainloop()
 
