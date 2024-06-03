@@ -12,6 +12,7 @@ def Poset(upsilon):
     l = len(upsilon)
     nodes = upsilon
     Edges = dict([])
+    print(upsilon)
     for u in upsilon:
         Edges[u] = []
     
@@ -107,21 +108,24 @@ def Poset(upsilon):
 
 def main():
     sample_input = [
-        12453, 12345, 13425, 13524, 12354, 12534, 12435, 14523, 14235, 13254, 13245, 14253
+        '12453', '12345', '13425', '13524', '12354', '12534', '12435', '14523', '14235', '13254', '13245', '14253'
     ]
     
-    count = 1
-    for inputLinearOrders in sample_input:
-        input_list = [int(x) for x in str(inputLinearOrders)]
-        print(f"Input: {input_list}")
-        poset = Poset(input_list)
-        posets = poset.generateLinearExtensions()
-        if posets:
-            for i, linear_order in enumerate(posets):
-                print(f"P{i+1}: {linear_order}")
-        else:
-            print(f"No posets found for input: {input_list}")
-        print()
+    output = Poset(sample_input)
+    for poset in output:
+        print(poset)
+    # count = 1
+    # for inputLinearOrders in sample_input:
+    #     input_list = [int(x) for x in str(inputLinearOrders)]
+    #     print(f"Input: {input_list}")
+    #     posets = Poset(input_list)
+    #     posets = poset.generateLinearExtensions()
+    #     if posets:
+    #         for i, linear_order in enumerate(posets):
+    #             print(f"P{i+1}: {linear_order}")
+    #     else:
+    #         print(f"No posets found for input: {input_list}")
+    #     print()
 
 if __name__ == "__main__":
     main()
