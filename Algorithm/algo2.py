@@ -12,7 +12,7 @@ def Poset(upsilon):
     l = len(upsilon)
     nodes = upsilon
     Edges = dict([])
-    print(upsilon)
+    #print(upsilon)
     for u in upsilon:
         Edges[u] = []
     
