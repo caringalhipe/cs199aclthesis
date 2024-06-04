@@ -33,6 +33,8 @@ def exact_k_poset_cover(Y, k):
     
     nx.draw(G, pos, with_labels=True, node_size=1000)
     nx.draw_networkx_edge_labels(G, pos, edge_labels=nx.get_edge_attributes(G,'label'))
+    
+    #plt.show()
 
     A_star = []
     for a, b in G.edges():
