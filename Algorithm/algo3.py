@@ -9,6 +9,37 @@ from permutohedron import check_swap
 # Copy the poset_utils.py functions here
 # (VERIFY, get_linear_extensions, binaryRelation, binaryToCover, superCover)
 
+def find_anchors(upsilon):
+    """
+    Function to find all anchor (a, b) pairs in the input sequences.
+    
+    Parameters:
+    upsilon (list of str): A list of strings representing the input sequences.
+    
+    Returns:
+    list: A list of tuples representing all anchor pairs (a, b).
+    """
+    anchors = []
+    for sequence in upsilon:
+        for i in range(len(sequence) - 1):
+            anchor = (int(sequence[i]), int(sequence[i + 1]))
+            if anchor not in anchors:
+                anchors.append(anchor)
+    return anchors
+
+def group_anchors(anchors, k):
+    """
+    Function to generate all combinations of anchor pairs grouped by k-1.
+    
+    Parameters:
+    anchors (list of tuples): A list of anchor pairs (a, b).
+    k (int): The number of anchors per group.
+    
+    Returns:
+    list: A list of combinations, each containing k-1 anchor pairs.
+    """
+    return list(itertools.combinations(anchors, k-1))
+
 def exact_k_poset_cover(Y, k):
     # G = nx.Graph()
     # print(enumerate(Y))
@@ -36,42 +67,58 @@ def exact_k_poset_cover(Y, k):
     
     #plt.show()
 
-    A_star = []
-    for a, b in G.edges():
-        A_star.append({(a, b)})
-
-    P_T_star = []
-    for A in A_star:
-        Y_A = [L for L in Y if all(a < b for (a, b) in A)]
-        P_A = Poset(Y_A)
-        if P_A is not None:
-            P_i = Algorithm_2(Y, P_A, A)
-            P_T_star.extend(P_i)
-
-    for P_star in combinations(P_T_star, k):
-        if set().union(*(get_linear_extensions(binaryToCover(P, len(Y[0]))) for P in P_star)) == set(Y):
-            return P_star
-
-    return None
-
-def Algorithm_2(Y, P_A, A):
-    P_i = Poset(Y)  # Call Poset function from algorithm2.py
-    return P_i
+    anchors = find_anchors(upsilon)
+    #print("Anchors:", anchors)
+    
+    grouped_anchors = group_anchors(anchors, k)
+    #print("Grouped Anchors:", grouped_anchors)
+    
+    poset_cover = []
+    for element in grouped_anchors:
+        Upsilon_A = []
+        print("Current Grouped Anchor:", element)
+        
+        for sequence in upsilon:
+            satisfies = True
+            for anchor in element:
+                a, b = str(anchor[0]), str(anchor[1])
+                if a in sequence and b in sequence:
+                    if sequence.index(a) > sequence.index(b):
+                        satisfies = False
+                        break
+                else:
+                    satisfies = False
+                    break
+            if satisfies:
+                Upsilon_A.append(sequence)
+        
+        print("Upsilon_A:", Upsilon_A)
+        
+        if Upsilon_A:
+            P_A = Poset(Upsilon_A)
+            print("P_A:", P_A)
+            poset_cover.append(P_A)
+    
+    return poset_cover[:k]
 
 def main():
     sample_input = [
-        '12345', '12435', '12453', '13245', '13254', 
-        '13425', '13452', '13524', '13542', '14235', '14253', '14325', 
-        '14352', '14523', '14532', '15423'
+        '12453', '12345', '13425', '13524', '12354', '12534', '12435', '14523', '14235', '13254', '13245', '14253'
     ]
+    k = 4
     
-    P_star_prime = exact_k_poset_cover(sample_input, 3)
-    if P_star_prime is not None:
-        print("Found Exact k-Poset Cover:")
-        for i, P in enumerate(P_star_prime):
-            print(f"P_{i+1}: {P}")
-    else:
-        print("No Exact k-Poset Cover found.")
+    
+    result = k_poset_cover(sample_input, k)
+    
+    """
+    for poset in result:
+        print(poset)
+    
+    
+    with open("poset_cover_results.txt", "w") as file:
+        for poset in result:
+            file.write(str(poset) + "\n")
+    """
 
 if __name__ == "__main__":
     main()

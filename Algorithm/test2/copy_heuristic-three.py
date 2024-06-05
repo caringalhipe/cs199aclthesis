@@ -1,17 +1,9 @@
-"""
------------ TO RUN -----------------
-python TreePoset.py <vertex count*> 
-
-where <vertex count*> = {3, 4, 5, 6}
-
-"""
-import sys, os
 import networkx as nx
 import pylab as p
 from collections import defaultdict, OrderedDict
 from TreePoset_Utils_v2 import VERIFY, get_linear_extensions, group_linearOrders_by_its_root, binaryToCover, isTreePoset, binaryRelation, superCover
 
-def TreePoset(upsilon):
+def TreePosetPoset(upsilon):
     Ptree = []
     
     # Generate Transposition Graph
@@ -22,16 +14,26 @@ def TreePoset(upsilon):
     for u in upsilon:
         Edges[u] = []
     
+    """
+    The code below generates pairs from after the starting number, and 
+    finds linear orders with its mirror and pair that has its mirror
+    e.g.
+    pairs: ['34']
+    Edges {'1234': [[(3, 4), '1243']], '1243': [[(3, 4), '1234']], '1324': [], '1342': [], '1423': [], '1432': []}
+    """
     for a in range(l):
         G.add_node(upsilon[a])
         for b in range(a+1, l):
             pairs = [upsilon[a][i:i+2] for i in range(len(upsilon[a])) if "".join(reversed(upsilon[a][i:i+2])) in upsilon[b] and 
                      upsilon[a][0:i]+upsilon[a][i+2:len(upsilon[a])] == upsilon[b][0:i]+upsilon[b][i+2:len(upsilon[b])]]
+            print("pairs:", pairs)
             if len(pairs)>0:
                 G.add_edge(upsilon[a], upsilon[b], label=str(sorted([pairs[0][0],pairs[0][1]])))
                 Edges[upsilon[a]].append([tuple(sorted((int(pairs[0][0]),int(pairs[0][1])))), upsilon[b]])
                 Edges[upsilon[b]].append([tuple(sorted((int(pairs[0][0]),int(pairs[0][1])))), upsilon[a]])
-
+                print("Edges", Edges)
+            print("pairs:", pairs)
+    print("pairs:", pairs)
     # Form Tree Posets
     while len(nodes)>0:
         # Create list of neighbor nodes
@@ -42,8 +44,9 @@ def TreePoset(upsilon):
         # Obtain starting node (node with least neighbors)
         numNeighbors = [[len(Neighbors[l]),l] for l in Neighbors]
         numNeighbors = sorted(numNeighbors, key = lambda l: l[0])
+        print("numNeighbors:", numNeighbors)
         startNode = numNeighbors[0][1]
-
+        print("startNode:", startNode)
         # Initialize start values for traversal
         curLE = [startNode] # list of Linear Extensions currently in poset
         curP = binaryRelation([startNode]) # list of cover relations in current poset
@@ -57,31 +60,35 @@ def TreePoset(upsilon):
             for node in curLE:
                 potentialPairs += [Edges[node][n] for n in range(len(Edges[node])) 
                                 if Edges[node][n][1] in nodes]
+                print("potentialPairs", potentialPairs)
                 for pair in potentialPairs:
                     id = tuple(sorted([int(p) for p in pair[0]]))
                     if potentialNodes.get(id)==None:
                         potentialNodes[id] = [pair[1]]
                     elif pair[1] not in potentialNodes[id]:
                         potentialNodes[id] += [pair[1]]
+                print("potentialNodes", potentialNodes)
 
             # Sort potential extensions by frequency from greatest to least 
             potentialNodes = sorted(potentialNodes.items(), key=lambda x: len(x[1]), reverse=True)
-
+            print("potentialNodes", potentialNodes)
             # Check potential anchor pairs to extend to
             i = 1
             for potentials in potentialNodes:
                 pairsToRemove = [potentials[0],(potentials[0][1], potentials[0][0])]
+                print("pairsToRemove", pairsToRemove)
                 nodesToAdd = potentials[1]
+                print("nodesToAdd", nodesToAdd)
                 # If a potential mirror has more than 1 node, include convex of mirror
                 if len(potentials[1])>1:
                     mirrors = [set(binaryRelation([x])) for x in potentials[1]] # list of sets of cover relations of each potential node to add from mirror
                     nodesToAdd += [s for s in superCover(mirrors, list(G.nodes)) if s not in nodesToAdd] # list of valid nodes to extend from if convex exists
                     pairsToRemove += [Edges[l][x][0] for l in nodesToAdd for x in range(len(Edges[l])) if l not in potentials[1]]
                     pairsToRemove = list(set(pairsToRemove))
-
+                    print("mirrors", mirrors)
                 # List of cover relations to potentially add to poset
                 tempNodes = [n for n in list(set(curP + binaryRelation(nodesToAdd))) if n not in remEdges+pairsToRemove and (n[1],n[0]) not in remEdges+pairsToRemove+curP]
-
+                print("tempNodes", tempNodes)
                 # Check if tree poset can be formed and if it will cover the input 
                 P = get_linear_extensions(binaryToCover(tempNodes,len(upsilon[0])))
                 # If the poset is valid, add node/s and continue traversal
@@ -90,10 +97,15 @@ def TreePoset(upsilon):
                     curLE += [p for p in nodesToAdd if p not in curLE]
                     nodes = [n for n in nodes if n not in curLE]
                     remEdges += pairsToRemove
+                    print("curP", curP)
+                    print("curLE", curLE)
+                    print("nodes", nodes)
+                    print("remEdges", remEdges)
                     break
                 # If none of the potential node/s yield a valid tree poset, end traversal and continue with remaining graph
                 elif i>=len(potentialNodes):
                     cond = 0
+                    print("potentialNodes", potentialNodes)
                 i += 1
 
             # If there are no potential nodes to extend to, end traversal and continue with remaining graph
@@ -122,65 +134,22 @@ def TreePoset(upsilon):
     return Ptree
 
 def main():
-    
+    """
     sample_input = [
         '12453', '12345', '13425', '13524', '12354', '12534', '12435', '14523', '14235', '13254', '13245', '14253'
     ]
-    """
+    
     sample_input = [
         '135624', '315624', '153624', '153264', '135264', '315264'
     ]
     
-    P_A = [[(1, 2), (1, 3), (1, 4), (1, 5), (2, 4), (3, 2), (3, 4), (3, 5), (5, 2), (5, 4)]]
-    A = ((5, 2), (5, 4))
     """
+    sample_input = [
+        '1234', '1243', '1324', '1342', '1423', '1432'
+    ]
     output = TreePosetPoset(sample_input)
     for poset in output:
         print(poset)
 
-
-
-""""
-count = 1
-with open(f'optsol/inputs/{args[1]}treesinput.txt', 'r') as input_file, open(f'outputs/output_{args[1]}.txt', 'w') as output_file:
-    for line in input_file: # work on each test case
-        print(count)
-        count+=1
-        inputLinearOrders = [int(x) for x in line.strip('[]\n').split(',')]
-
-        inputLinearOrders.sort()
-        inputLinearOrders = [str(item) for item in inputLinearOrders]
-
-        posets = []
-        # group linear orders according to their root
-        groupings = group_linearOrders_by_its_root(inputLinearOrders)
-
-        #print("Groupings: ", groupings)
-
-        # for each group, there is a set of posets
-        # append each poset to the list posets
-        
-        for group in groupings:
-            poset_group = TreePoset(group)
-            for poset in poset_group:
-                posets.append(poset)
-        
-        if posets != None:
-            output_file.write(f"Input: {[int(x) for x in inputLinearOrders]}\n")
-            for i in range(len(posets)):
-                output_file.write(f"P{str(i+1)}: {posets[i]}\n")
-            output_file.write("\n")
-
-        else:
-            output_file.write(f"Input: {[int(x) for x in inputLinearOrders]}\n")
-            output_file.write("None!!!!!\n\n")
-
-if posets != None:
-    print(f"Generated all output of input linear order sets with {args[1]} vertices")
-    print("Check 'output' directory")
-else:
-    print("Generated nothing")
-
-"""
-
-
+if __name__ == "__main__":
+    main()
