@@ -57,12 +57,15 @@ def k_poset_cover(upsilon, k):
                 if adjacent:
                     G.add_edge(upsilon[i], upsilon[j], label=adjacent, color = 'k')
                     if not adjacent in anchors:
-                        anchors.append((int(adjacent[0]), int(adjacent[3])))
+                        anchors.append(adjacent)
+                        
+    for i in range(len(anchors)):
+        anchors[i] = (int(anchors[i][0]), int(anchors[i][3]))
     
-    pos = nx.kamada_kawai_layout(G)
+    #pos = nx.kamada_kawai_layout(G)
     
-    nx.draw(G, pos, with_labels=True, node_size=1000)
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=nx.get_edge_attributes(G,'label'))
+    #nx.draw(G, pos, with_labels=True, node_size=1000)
+    #nx.draw_networkx_edge_labels(G, pos, edge_labels=nx.get_edge_attributes(G,'label'))
     
     #anchors = find_anchors(upsilon)
     #print("Anchors:", anchors)
