@@ -2,6 +2,7 @@ import networkx as nx
 from collections import defaultdict, OrderedDict
 from algo2 import Poset
 import itertools
+from permutohedron import check_swap
 
 def find_anchors(upsilon):
     """
@@ -45,7 +46,25 @@ def k_poset_cover(upsilon, k):
     Returns:
     list: A list of posets that cover the input sequences.
     """
-    anchors = find_anchors(upsilon)
+    G = nx.Graph()
+    anchors = []
+    N = len(upsilon)
+    #Add an edge between each node that has an adjacent swap
+    for i in range(N):
+        G.add_node(upsilon[i])
+        for j in range(i+1, N):
+                adjacent = check_swap(upsilon[i], upsilon[j])
+                if adjacent:
+                    G.add_edge(upsilon[i], upsilon[j], label=adjacent, color = 'k')
+                    if not adjacent in anchors:
+                        anchors.append((int(adjacent[0]), int(adjacent[3])))
+    
+    pos = nx.kamada_kawai_layout(G)
+    
+    nx.draw(G, pos, with_labels=True, node_size=1000)
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=nx.get_edge_attributes(G,'label'))
+    
+    #anchors = find_anchors(upsilon)
     #print("Anchors:", anchors)
     
     grouped_anchors = group_anchors(anchors, k)
