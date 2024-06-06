@@ -3,8 +3,8 @@ import pylab as p
 from collections import defaultdict, OrderedDict
 from TreePoset_Utils_v2 import VERIFY, get_linear_extensions, group_linearOrders_by_its_root, binaryToCover, isTreePoset, binaryRelation, superCover
 
-def TreePosetPoset(upsilon):
-    Ptree = []
+def Poset(upsilon):
+    Pset = []
     
     # Generate Transposition Graph
     G = nx.Graph()
@@ -32,9 +32,10 @@ def TreePosetPoset(upsilon):
                 Edges[upsilon[a]].append([tuple(sorted((int(pairs[0][0]),int(pairs[0][1])))), upsilon[b]])
                 Edges[upsilon[b]].append([tuple(sorted((int(pairs[0][0]),int(pairs[0][1])))), upsilon[a]])
                 print("Edges", Edges)
-            print("pairs:", pairs)
-    print("pairs:", pairs)
+            #print("pairs:", pairs)
+    #print("pairs:", pairs)
     # Form Tree Posets
+    """
     while len(nodes)>0:
         # Create list of neighbor nodes
         Neighbors = dict([])
@@ -51,6 +52,20 @@ def TreePosetPoset(upsilon):
         curLE = [startNode] # list of Linear Extensions currently in poset
         curP = binaryRelation([startNode]) # list of cover relations in current poset
         remEdges = [] # list of edges/anchor pairs to remove from cover relations
+    """
+    while len(G.nodes) > 0:
+        # Create a dictionary of neighbor nodes for each node
+        neighbors = {n: list(G.neighbors(n)) for n in G.nodes}
+
+        # Obtain the starting node (node with the least neighbors)
+        numNeighbors = [[len(neighbors[l]), l] for l in neighbors]
+        numNeighbors = sorted(numNeighbors, key=lambda l: l[0])
+        startNode = numNeighbors[0][1]
+        print("startNode:", startNode)
+        # Initialize values for traversal
+        curLE = [startNode]  # List of linear extensions currently in poset
+        curP = binaryRelation([startNode])  # List of cover relations in current poset
+        remEdges = []  # List of edges/anchor pairs to remove from cover relations
 
         cond = 1
         while(cond):
@@ -128,26 +143,27 @@ def TreePosetPoset(upsilon):
             G.remove_node(le)
 
         # Add poset to poset tree, start over with remaining graph
-        Ptree.append(curP)
+        Pset.append(curP)
     
     # Return list of tree posets found
-    return Ptree
+    return Pset
 
 def main():
-    """
+    
     sample_input = [
         '12453', '12345', '13425', '13524', '12354', '12534', '12435', '14523', '14235', '13254', '13245', '14253'
     ]
-    
+    """
     sample_input = [
         '135624', '315624', '153624', '153264', '135264', '315264'
     ]
     
-    """
+    
     sample_input = [
         '1234', '1243', '1324', '1342', '1423', '1432'
     ]
-    output = TreePosetPoset(sample_input)
+    """
+    output = Poset(sample_input)
     for poset in output:
         print(poset)
 

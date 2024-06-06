@@ -10,15 +10,7 @@ from permutohedron import check_swap
 # (VERIFY, get_linear_extensions, binaryRelation, binaryToCover, superCover)
 
 def find_anchors(upsilon):
-    """
-    Function to find all anchor (a, b) pairs in the input sequences.
-    
-    Parameters:
-    upsilon (list of str): A list of strings representing the input sequences.
-    
-    Returns:
-    list: A list of tuples representing all anchor pairs (a, b).
-    """
+
     anchors = []
     for sequence in upsilon:
         for i in range(len(sequence) - 1):
@@ -28,16 +20,7 @@ def find_anchors(upsilon):
     return anchors
 
 def group_anchors(anchors, k):
-    """
-    Function to generate all combinations of anchor pairs grouped by k-1.
-    
-    Parameters:
-    anchors (list of tuples): A list of anchor pairs (a, b).
-    k (int): The number of anchors per group.
-    
-    Returns:
-    list: A list of combinations, each containing k-1 anchor pairs.
-    """
+
     return list(itertools.combinations(anchors, k-1))
 
 def exact_k_poset_cover(Y, k):

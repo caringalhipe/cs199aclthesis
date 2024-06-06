@@ -4,7 +4,7 @@ import pylab as p
 from collections import defaultdict, OrderedDict
 from poset_utils import VERIFY, get_linear_extensions, binaryRelation, binaryToCover, superCover
 
-def Poset(upsilon, P_A, A):
+def Poset(upsilon):
     Pset = []
     
     # Generate Transposition Graph
@@ -34,7 +34,10 @@ def Poset(upsilon, P_A, A):
         Neighbors[n] = list(G.neighbors(n))
     
     # Obtain starting node (node with least neighbors)
-    startNode = P_A
+    numNeighbors = [[len(Neighbors[l]), l] for l in Neighbors]
+    numNeighbors = sorted(numNeighbors, key=lambda l: l[0])
+    startNode = numNeighbors[0][1]
+        
     #print(startNode)
     # Initialize start values for traversal
     curLE = [startNode] # list of Linear Extensions currently in poset
@@ -121,7 +124,7 @@ def main():
     P_A = [[(1, 2), (1, 3), (1, 4), (1, 5), (2, 4), (3, 2), (3, 4), (3, 5), (5, 2), (5, 4)]]
     A = ((5, 2), (5, 4))
     
-    output = Poset(sample_input, P_A, A)
+    output = Poset(sample_input)
     for poset in output:
         print(poset)
     # count = 1
