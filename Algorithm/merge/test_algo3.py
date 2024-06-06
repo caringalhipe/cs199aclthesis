@@ -16,6 +16,8 @@ def find_anchors(G):
     """
     anchors = list(set(anchor[2]['label'] for anchor in G.edges.data()))
     
+    anchors += [anchor[::-1] for anchor in anchors]
+    
     for i in range(len(anchors)):
         anchors[i] = (int(anchors[i][0]), int(anchors[i][3]))
     
