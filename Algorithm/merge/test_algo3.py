@@ -4,7 +4,7 @@ from algo2 import Poset
 import itertools
 from permutohedron import check_swap
 
-def find_anchors(upsilon):
+def find_anchors(G):
     """
     Function to find all anchor (a, b) pairs in the input sequences.
     
@@ -14,12 +14,11 @@ def find_anchors(upsilon):
     Returns:
     list: A list of tuples representing all anchor pairs (a, b).
     """
-    anchors = []
-    for sequence in upsilon:
-        for i in range(len(sequence) - 1):
-            anchor = (int(sequence[i]), int(sequence[i + 1]))
-            if anchor not in anchors:
-                anchors.append(anchor)
+    anchors = list(set(anchor[2]['label'] for anchor in G.edges.data()))
+    
+    for i in range(len(anchors)):
+        anchors[i] = (int(anchors[i][0]), int(anchors[i][3]))
+    
     return anchors
 
 def group_anchors(anchors, k):
@@ -56,19 +55,14 @@ def k_poset_cover(upsilon, k):
                 adjacent = check_swap(upsilon[i], upsilon[j])
                 if adjacent:
                     G.add_edge(upsilon[i], upsilon[j], label=adjacent, color = 'k')
-                    if not adjacent in anchors:
-                        anchors.append(adjacent)
-                        
-    for i in range(len(anchors)):
-        anchors[i] = (int(anchors[i][0]), int(anchors[i][3]))
     
     #pos = nx.kamada_kawai_layout(G)
     
     #nx.draw(G, pos, with_labels=True, node_size=1000)
     #nx.draw_networkx_edge_labels(G, pos, edge_labels=nx.get_edge_attributes(G,'label'))
     
-    #anchors = find_anchors(upsilon)
-    #print("Anchors:", anchors)
+    anchors = find_anchors(G)
+    print("Anchors:", anchors)
     
     grouped_anchors = group_anchors(anchors, k)
     #print("Grouped Anchors:", grouped_anchors)
@@ -76,7 +70,7 @@ def k_poset_cover(upsilon, k):
     poset_cover = []
     for element in grouped_anchors:
         Upsilon_A = []
-        print("Current Grouped Anchor:", element)
+        #print("Current Grouped Anchor:", element)
         
         for sequence in upsilon:
             satisfies = True
@@ -92,11 +86,11 @@ def k_poset_cover(upsilon, k):
             if satisfies:
                 Upsilon_A.append(sequence)
         
-        print("Upsilon_A:", Upsilon_A)
+        #print("Upsilon_A:", Upsilon_A)
         
         if Upsilon_A:
             P_A = Poset(Upsilon_A)
-            print("P_A:", P_A)
+            #print("P_A:", P_A)
             poset_cover.append(P_A)
     
     return poset_cover[:k]

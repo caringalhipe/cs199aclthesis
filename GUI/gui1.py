@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 from random import shuffle
 from itertools import cycle
 
+#import algo3 and kposet functions
+
 # Checks if two linear orders have an adjacent swap
 def check_swap(str1, str2):
       for i in range(len(str1)-1):
@@ -17,21 +19,22 @@ def check_swap(str1, str2):
 
 # Process input to create a graph and generate a figure
 def process_input(data, poset = [], node_color = 'pink', edge_color = 'k'):
-    num_orders = int(data[0])
-    inp = data[1:num_orders + 1]
+    global G
+    
+    num_orders = len(data)
 
     G = nx.Graph()
 
     #Add an edge between each node that has an adjacent swap
     for i in range(num_orders):
-        G.add_node(inp[i])
+        G.add_node(data[i])
         for j in range(i+1, num_orders):
-                adjacent = check_swap(inp[i], inp[j])
+                adjacent = check_swap(data[i], data[j])
                 if adjacent:
-                    if inp[i] in poset and inp[j] in poset:
-                            G.add_edge(inp[i], inp[j], label=adjacent, color = edge_color)
+                    if data[i] in poset and data[j] in poset:
+                            G.add_edge(data[i], data[j], label=adjacent, color = edge_color)
                     else:
-                            G.add_edge(inp[i], inp[j], label=adjacent, color = 'k')
+                            G.add_edge(data[i], data[j], label=adjacent, color = 'k')
 
     #Determines the layout of the graph
     pos = nx.kamada_kawai_layout(G)
@@ -59,13 +62,28 @@ def load_from_file():
     if file_path:
         with open(file_path, 'r') as file:
             data = file.read().strip().split("\n")
+            for i in range(len(data)):
+                input_textbox.insert(tk.INSERT, data[i] + '\n')
             display_graph(data)
 
 # Submit input from textbox
 def submit_input():
-    global data
+    global data, k
     data = input_textbox.get("1.0", tk.END).strip().split("\n")
+    k = k_textbox.get("1.0", tk.END).strip()
     display_graph(data)
+    ### ALGO WILL RUN WHEN SUBMIT BUTTON IS PRESSED ###
+    if len(data) > 0 and k.isnumeric() and int(k) > 0:
+        
+        posets = k_poset(data)
+        
+        colors = ['r', 'g', 'b', 'c','m','y']
+    
+        for k in range(len(posets)):
+            highlight_button = tk.Button(right_frame, text=f"Show P{k+1}", command=lambda k=k: highlight_graph(data, posets[k], colors[k % len(colors)]))
+            highlight_button.pack(pady=10)
+    else:
+        messagebox.showerror('Invalid input', 'Please enter a valid value of k')
 
 # Display graph based on input data
 def display_graph(data):
@@ -88,9 +106,9 @@ def redraw_graph():
     for widget in plot_frame.winfo_children():
         widget.destroy()
         
-    copy = data[1:]
+    copy = data
     shuffle(copy)
-    data[1:] = copy
+    data = copy
 
     fig = process_input(data)
     
@@ -110,10 +128,20 @@ def highlight_graph(data, poset, poset_color):
     canvas = FigureCanvasTkAgg(fig, master=plot_frame)
     canvas.draw()
     canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+    
+### define kposet function here
+def k_poset(data):
+    # magic algo return the posets
+    posets = [['14523', '14235', '12453', '12435', '12345', '14253'],
+                               ['12435', '12345', '13245', '13254', '13524', '12354'],
+                               ['12345', '13245', '13254', '13425', '12354', '12534']]
+    
+    return posets
+###
 
 # Create the GUI
 def create_gui():
-    global input_textbox, plot_frame
+    global input_textbox, plot_frame, k_textbox, right_frame
 
     root = tk.Tk()
     root.title("Poset Visualizer")
@@ -153,8 +181,16 @@ def create_gui():
     file_button.pack(pady=10)
 
     # Add input textbox to left frame
+    input_label = tk.Label(left_frame, text = "Input Linear Orders:")
+    input_label.pack(pady=10)
     input_textbox = tk.Text(left_frame, height=10, width=50)
     input_textbox.pack(pady=10)
+    
+    # Add k textbox to left frame
+    k_label = tk.Label(left_frame, text = "Input k:")
+    k_label.pack(pady=10)
+    k_textbox = tk.Text(left_frame, height=1, width=2)
+    k_textbox.pack(pady=10)
 
     # Add Submit button to left frame
     submit_button = tk.Button(left_frame, text="Submit", command=submit_input)
@@ -162,17 +198,6 @@ def create_gui():
     
     redraw_button = tk.Button(master=left_frame, text="Redraw Graph", command=lambda: redraw_graph())
     redraw_button.pack(pady=10)
-    
-    posets = [['14523', '14235', '12453', '12435', '12345', '14253'],
-                               ['12435', '12345', '13245', '13254', '13524', '12354'],
-                               ['12345', '13245', '13254', '13425', '12354', '12534']]
-    
-    
-    colors = ['r', 'g', 'b', 'c','m','y']
-    
-    for k in range(len(posets)):
-        highlight_button = tk.Button(master=right_frame, text=f"Show P{k+1}", command=lambda k=k: highlight_graph(data, posets[k], colors[k % len(colors)]))
-        highlight_button.pack(pady=10)
 
     root.mainloop()
 
