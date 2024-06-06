@@ -16,12 +16,20 @@ def find_anchors(G):
     """
     anchors = list(set(anchor[2]['label'] for anchor in G.edges.data()))
     
-    anchors += [anchor[::-1] for anchor in anchors]
+    anchors += [''.join(reversed(anchor)) for anchor in anchors]
     
     for i in range(len(anchors)):
         anchors[i] = (int(anchors[i][0]), int(anchors[i][3]))
     
     return anchors
+
+def no_dupe(anchors):
+    N = len(anchors)
+    for i in range(N-1):
+        for j in range(i+1, N):
+            if ''.join(str(num) for num in anchors[i]) == ''.join(reversed(''.join(str(num) for num in anchors[j]))):
+                return False
+    return True
 
 def group_anchors(anchors, k):
     """
@@ -34,7 +42,7 @@ def group_anchors(anchors, k):
     Returns:
     list: A list of combinations, each containing k-1 anchor pairs.
     """
-    return list(itertools.combinations(anchors, k-1))
+    return [combi for combi in itertools.combinations(anchors, k-1) if no_dupe(combi)]
 
 def k_poset_cover(upsilon, k):
     """
@@ -67,7 +75,7 @@ def k_poset_cover(upsilon, k):
     print("Anchors:", anchors)
     
     grouped_anchors = group_anchors(anchors, k)
-    #print("Grouped Anchors:", grouped_anchors)
+    print("Grouped Anchors:", grouped_anchors)
     
     poset_cover = []
     for element in grouped_anchors:
