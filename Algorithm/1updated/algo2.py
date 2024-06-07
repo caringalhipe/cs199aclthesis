@@ -29,19 +29,6 @@ def maximalPoset(upsilon, P_A, A):
 
     #print("Neighbors", Neighbors)
 
-    """
-    # Find the linear extension with the least neighbors
-    least_neighbors_count = float('inf')
-    start_node = None
-    for linear_ext in Y_cov:
-        neighbor_count = len(Neighbors.get(linear_ext, []))
-        if neighbor_count < least_neighbors_count:
-            least_neighbors_count = neighbor_count
-            start_node = linear_ext
-
-    print("Start Node:", start_node)
-    """
-
     # Find neighbors of elements in Y_cov that are not yet in Y_cov
     # Finding mirror
     tempMirrors = []
