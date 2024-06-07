@@ -121,6 +121,7 @@ def Poset(upsilon):
                 print("isPoset(tempNodes)", isPoset(tempNodes))
 
                 # Initially, VERIFY is used to check if P and curLE + [p for p in nodesToAdd if p not in curLE] are equal
+                # Now it just checks if the latter is a subset of P
                 print("Verify", VERIFY(P, curLE + [p for p in nodesToAdd if p not in curLE]))
                 print("curLE + nodesToAdd", curLE + [p for p in nodesToAdd if p not in curLE])
 
