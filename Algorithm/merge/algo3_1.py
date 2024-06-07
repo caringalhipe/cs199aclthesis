@@ -109,6 +109,11 @@ def k_poset_cover(upsilon, k):
             #poset_cover.append(P_A)
             #P_i = maximalPoset(Upsilon_A, P_A, A)
             Pstar.append(P_A)
+            """
+            if P_A:
+                P_i = maximalPoset(Upsilon, P_A, A)
+                Pstar_total.append(P_i)
+            """
     
     """
     for P in Pstar:
@@ -119,6 +124,8 @@ def k_poset_cover(upsilon, k):
         poset_star, lo_star = find_covering_poset(P, Upsilon)
         Pfinal.append(P)
         LOfinal.append(LO)
+
+    Pfinal, LOfinal = find_covering_poset(Pstar_total, Upsilon)
     """
     
     return Pstar[:k]
