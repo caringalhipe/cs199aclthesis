@@ -2,7 +2,7 @@ import networkx as nx
 from collections import defaultdict, OrderedDict
 from algo2 import Poset
 import itertools
-from permutohedron import check_swap
+from gui1 import check_swap
 from algo1 import generatePoset
 from algo3_2 import find_covering_poset
 
@@ -63,6 +63,7 @@ def k_poset_cover(upsilon, k):
     G = nx.Graph()
     anchors = []
     N = len(upsilon)
+    
     #Add an edge between each node that has an adjacent swap
     for i in range(N):
         G.add_node(upsilon[i])
@@ -107,7 +108,7 @@ def k_poset_cover(upsilon, k):
             P_A = generatePoset(Upsilon_A)
             print("P_A:", P_A)
             #poset_cover.append(P_A)
-            #P_i = maximalPoset(Upsilon_A, P_A, A)
+            #P_i = maximalPoset(Upsilon, P_A, A)
             Pstar.append(P_A)
             """
             if P_A:
