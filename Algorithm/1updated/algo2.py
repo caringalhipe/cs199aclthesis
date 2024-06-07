@@ -16,6 +16,15 @@ def Poset(upsilon):
     for u in upsilon:
         Edges[u] = []
     
+    
+    """
+    The code below generates pairs from after the starting number, and 
+    finds linear orders with its mirror and pair that has its mirror
+    e.g.
+    pairs: ['34']
+    Edges {'1234': [[(3, 4), '1243']], '1243': [[(3, 4), '1234']], '1324': [], '1342': [], '1423': [], '1432': []}
+    """
+
     for a in range(l):
         G.add_node(upsilon[a])
         for b in range(a+1, l):
@@ -92,31 +101,29 @@ def Poset(upsilon):
                     pairsToRemove += [Edges[l][x][0] for l in nodesToAdd for x in range(len(Edges[l])) if l not in potentials[1]]
                     pairsToRemove = list(set(pairsToRemove))
                     print("mirrors", mirrors)
-                """
 
-                mirrors = [set(binaryRelation([x])) for x in potentials[1]]  # list of sets of cover relations of each potential node to add from mirror
-                nodesToAdd += [s for s in superCover(mirrors, list(G.nodes)) if s not in nodesToAdd]  # list of valid nodes to extend from if convex exists
-                pairsToRemove += [Edges[l][x][0] for l in nodesToAdd for x in range(len(Edges[l])) if l not in potentials[1]]
-                pairsToRemove = list(set(pairsToRemove))
-                print("mirrors", mirrors)
-                """
 
                 # List of cover relations to potentially add to poset
                 tempNodes = [n for n in list(set(curP + binaryRelation(nodesToAdd))) if n not in remEdges + pairsToRemove and (n[1], n[0]) not in remEdges + pairsToRemove + curP]
                 print("tempNodes", tempNodes)
+
                 # Check if tree poset can be formed and if it will cover the input
                 #P = get_linear_extensions(binaryToCover(tempNodes, len(upsilon[0])))
                 #print("upsilon[0]", upsilon[0])
                 #print("len of upsilon", len(upsilon[0]))
                 #print("binary to cover", binaryToCover(tempNodes, len(upsilon[0])))
                 #P = get_linear_extensions(binaryToCover(tempNodes, len(upsilon[0])))
+
                 P = get_linear_extensions(tempNodes)
                 print("P", P)
+
                 # If the poset is valid, add node/s and continue traversal
                 print("isPoset(tempNodes)", isPoset(tempNodes))
+
+                # Initially, VERIFY is used to check if P and curLE + [p for p in nodesToAdd if p not in curLE] are equal
                 print("Verify", VERIFY(P, curLE + [p for p in nodesToAdd if p not in curLE]))
                 print("curLE + nodesToAdd", curLE + [p for p in nodesToAdd if p not in curLE])
-                #if isPoset(tempNodes) and VERIFY(P, curLE + [p for p in nodesToAdd if p not in curLE]):
+
                 if isPoset(tempNodes) and VERIFY(P, curLE + [p for p in nodesToAdd if p not in curLE]):
                     curP = tempNodes
                     curLE += [p for p in nodesToAdd if p not in curLE]
@@ -127,7 +134,7 @@ def Poset(upsilon):
                     print("nodes", nodes)
                     print("remEdges", remEdges)
                     break
-                # If none of the potential node/s yield a valid tree poset, end traversal and continue with remaining graph
+                # If none of the potential node/s yield a valid poset, end traversal and continue with remaining graph
                 elif i >= len(potentialNodes):
                     cond = 0
                     #print("potentialNodes", potentialNodes)

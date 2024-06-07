@@ -96,12 +96,19 @@ def Poset(upsilon):
                 nodesToAdd = potentials[1]
                 print("nodesToAdd", nodesToAdd)
                 # If a potential mirror has more than 1 node, include convex of mirror
-                if len(potentials[1])>1:
+                """
+                if len(potentials[1])>0:
                     mirrors = [set(binaryRelation([x])) for x in potentials[1]] # list of sets of cover relations of each potential node to add from mirror
                     nodesToAdd += [s for s in superCover(mirrors, list(G.nodes)) if s not in nodesToAdd] # list of valid nodes to extend from if convex exists
                     pairsToRemove += [Edges[l][x][0] for l in nodesToAdd for x in range(len(Edges[l])) if l not in potentials[1]]
                     pairsToRemove = list(set(pairsToRemove))
                     print("mirrors", mirrors)
+                """
+                mirrors = [set(binaryRelation([x])) for x in potentials[1]] # list of sets of cover relations of each potential node to add from mirror
+                nodesToAdd += [s for s in superCover(mirrors, list(G.nodes)) if s not in nodesToAdd] # list of valid nodes to extend from if convex exists
+                pairsToRemove += [Edges[l][x][0] for l in nodesToAdd for x in range(len(Edges[l])) if l not in potentials[1]]
+                pairsToRemove = list(set(pairsToRemove))
+                print("mirrors", mirrors)
                 # List of cover relations to potentially add to poset
                 tempNodes = [n for n in list(set(curP + binaryRelation(nodesToAdd))) if n not in remEdges+pairsToRemove and (n[1],n[0]) not in remEdges+pairsToRemove+curP]
                 print("tempNodes", tempNodes)
@@ -128,14 +135,14 @@ def Poset(upsilon):
             if len(potentialNodes)==0:
                 cond=0
 
-        '''
+        
         # For drawing the transposition graphs
         pos = nx.spring_layout(G)
         nx.draw_networkx(G, pos, with_labels=True,font_size=10, node_size=500, node_color='#9CE5FF')
         nx.draw_networkx_edge_labels(G, pos, edge_labels=nx.get_edge_attributes(G,'label'))
 
         p.show()
-        '''
+        
 
         nodes = [n for n in nodes if n not in curLE]
         
@@ -150,11 +157,12 @@ def Poset(upsilon):
     return Pset
 
 def main():
-    
     sample_input = [
         '12453', '12345', '13425', '13524', '12354', '12534', '12435', '14523', '14235', '13254', '13245', '14253'
     ]
+    
     """
+    sample_input = ['1243', '1423', '1432']
     sample_input = [
         '135624', '315624', '153624', '153264', '135264', '315264'
     ]
