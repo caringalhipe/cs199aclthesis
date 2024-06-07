@@ -56,6 +56,7 @@ def Poset(upsilon):
     while len(G.nodes) > 0:
         # Create a dictionary of neighbor nodes for each node
         neighbors = {n: list(G.neighbors(n)) for n in G.nodes}
+        
 
         # Obtain the starting node (node with the least neighbors)
         numNeighbors = [[len(neighbors[l]), l] for l in neighbors]

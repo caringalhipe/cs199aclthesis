@@ -164,4 +164,58 @@ def superCover(mirrors, upsilon):
     else:
         return []
 
+def isPoset(P):
+    """
+    Check if the given relation P defines a valid poset.
+    
+    Parameters:
+    P (list of tuples): A list of pairs representing the partial order relations.
+    
+    Returns:
+    bool: True if P is a valid poset, False otherwise.
+    """
+    V = getVertices(P)
+
+    # Create dictionaries to store predecessors and successors
+    prec = {v: set() for v in V}
+    succ = {v: set() for v in V}
+    
+    for a, b in P:
+        succ[a].add(b)
+        prec[b].add(a)
+    
+    # Check reflexivity
+    for v in V:
+        if v not in succ[v]:
+            succ[v].add(v)
+        if v not in prec[v]:
+            prec[v].add(v)
+    
+    # Check antisymmetry
+    for a in V:
+        for b in succ[a]:
+            if a != b and a in succ[b]:
+                return False
+    
+    # Check transitivity
+    for a in V:
+        for b in succ[a]:
+            for c in succ[b]:
+                if c not in succ[a]:
+                    return False
+    
+    return True
+
+def getVertices(P):
+    """
+    Get all unique vertices from the relations in P.
+    
+    Parameters:
+    P (list of tuples): A list of pairs representing the partial order relations.
+    
+    Returns:
+    list: A list of unique vertices.
+    """
+    return list(set([x for pair in P for x in pair]))
+
 
