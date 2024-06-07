@@ -4,6 +4,7 @@ from algo2 import Poset
 import itertools
 from permutohedron import check_swap
 from algo1 import generatePoset
+from algo3_2 import find_covering_poset
 
 def find_anchors(G):
     """
@@ -114,6 +115,10 @@ def k_poset_cover(upsilon, k):
         linear_order = get_linear_extensions(P)
         if covers_upsilon(linear_order, upsilon):
             return P[:k] #original return
+
+        poset_star, lo_star = find_covering_poset(P, Upsilon)
+        Pfinal.append(P)
+        LOfinal.append(LO)
     """
     
     return Pstar[:k]
