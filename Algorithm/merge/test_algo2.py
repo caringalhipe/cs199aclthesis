@@ -34,7 +34,7 @@ def Poset(upsilon):
         for n in list(G.nodes):
             Neighbors[n]=list(G.neighbors(n))
 
-        #print("Neighbors", Neighbors)
+        print("Neighbors", Neighbors)
         # Obtain the starting node (node with the least neighbors)
         numNeighbors = [[len(Neighbors[l]), l] for l in Neighbors]
         #print("numNeighbors", numNeighbors)
@@ -70,7 +70,7 @@ def Poset(upsilon):
 
             # Sort potential extensions by frequency from greatest to least 
             potentialNodes = sorted(potentialNodes.items(), key=lambda x: len(x[1]), reverse=True)
-            #print("potentialNodes", potentialNodes)
+            print("potentialNodes", potentialNodes)
             # Check potential anchor pairs to extend to
 
             i = 1

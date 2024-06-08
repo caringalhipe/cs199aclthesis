@@ -49,6 +49,7 @@ def covers_upsilon(linear_orders, Upsilon):
 
 def k_poset_cover(upsilon, k):
     G = nx.Graph()
+    anchors = []
     N = len(upsilon)
     for i in range(N):
         G.add_node(upsilon[i])
@@ -56,15 +57,14 @@ def k_poset_cover(upsilon, k):
             adjacent = check_swap(upsilon[i], upsilon[j])
             if adjacent:
                 G.add_edge(upsilon[i], upsilon[j], label=adjacent, color='k')
-    
     anchors = find_anchors(G)
+    #print("Anchors:", anchors)
     grouped_anchors = group_anchors(anchors, k)
     Pstar = []
     Pstar_total = []
-    # Initialize outside the loop
     for A in grouped_anchors:
         Upsilon_A = []
-        
+        #print("Current Grouped Anchor:", A)
         for sequence in upsilon:
             satisfies = True
             for anchor in A:
@@ -78,26 +78,59 @@ def k_poset_cover(upsilon, k):
                     break
             if satisfies:
                 Upsilon_A.append(sequence)
+        #print("Upsilon_A:", Upsilon_A)
         if Upsilon_A:
             P_A = generatePoset(Upsilon_A)
             Pstar.append(P_A)
+            
             if P_A:
                 P_i = maximalPoset(upsilon, P_A, A)
-                print("P_i", P_i)
+                print(P_i)
                 Pstar_total.append(P_i)
+            
     
     Pfinal, LOfinal = find_covering_poset(Pstar_total, upsilon)
     return Pfinal, LOfinal
+
 
 def main():
     sample_input = [
         '12453', '12345', '13425', '13524', '12354', '12534', '12435', '14523', '14235', '13254', '13245', '14253'
     ]
     k = 3
-    Pfinal, LOfinal = k_poset_cover(sample_input, k)
-    
-    print("Final posets:", Pfinal)
-    print("Linear Orders Covered:", LOfinal)
+    result = k_poset_cover(sample_input, k)
+    print("Final posets", result)
 
 if __name__ == "__main__":
     main()
+
+"""
+args = sys.argv[1:]
+args[0] = int(args[0])
+args[1] = int(args[1])
+
+count = 1
+with open(f'optimalsolutions/optsol/inputs/{args[1]}posetsinput.txt', 'r') as input_file, open(f'outputs/output_{args[1]}.txt', 'w') as output_file:
+    for line in input_file:
+        print(count)
+        count += 1
+        inputLinearOrders = [int(x) for x in line.strip('[]\n').split(',')]
+        inputLinearOrders.sort()
+        inputLinearOrders = [str(item) for item in inputLinearOrders]
+        posets, linear_orders = k_poset_cover(inputLinearOrders, args[1])
+
+        if posets:
+            output_file.write(f"Input: {[int(x) for x in inputLinearOrders]}\n")
+            for i, poset in enumerate(posets):
+                output_file.write(f"P{str(i+1)}: {poset}\n")
+            output_file.write("\n")
+        else:
+            output_file.write(f"Input: {[int(x) for x in inputLinearOrders]}\n")
+            output_file.write("None!!!!!\n\n")
+
+if posets:
+    print(f"Generated all output of input linear order sets with {args[1]} vertices")
+    print("Check 'output' directory")
+else:
+    print("Generated nothing")
+"""

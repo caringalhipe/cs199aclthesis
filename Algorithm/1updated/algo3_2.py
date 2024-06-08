@@ -13,9 +13,9 @@ def find_covering_poset(Pstar, Upsilon):
     LOfinal = []
     
     for P in Pstar:
-        print("P", P)
+        #print("P", P)
         linear_order = get_linear_extensions(P)
-        print("Linear orders for P:", linear_order)
+        #print("Linear orders for P:", linear_order)
         
         covered_orders = []
         for order in Upsilon:
@@ -23,14 +23,16 @@ def find_covering_poset(Pstar, Upsilon):
                 covered_orders.append(order)
         
         LOfinal.append(covered_orders)
-        print("Covered orders:", covered_orders)
+        #print("Covered orders:", covered_orders)
         
         if covers_upsilon(linear_order, Upsilon):
-            print("Covering poset found:", P)
+            #print("Covering poset found:", P)
             Pfinal.append(P)
 
     if not Pfinal:
-        print("No covering poset found.")
+        #print("No covering poset found.")
+        return null, null
+        
     
     return Pfinal, LOfinal
 
