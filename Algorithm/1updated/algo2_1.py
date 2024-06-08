@@ -49,7 +49,6 @@ def maximalPoset(upsilon, P_A, A):
         # Finding convex of tempNodes
         P_tempnodes = generatePoset(tempNodes)
         LE_tempnodes = get_linear_extensions(P_tempnodes)
-        print()
         
         temp_cov = []
         for i in LE_tempnodes:

@@ -4,7 +4,6 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import networkx as nx
 import matplotlib.pyplot as plt
 from random import shuffle
-from itertools import cycle
 
 #import algo3 and kposet functions
 

@@ -9,6 +9,8 @@ from gui1 import check_swap
 from algo1 import generatePoset
 from algo3_2 import find_covering_poset
 from algo2_1 import maximalPoset
+from itertools import chain
+from random import sample
 
 def get_linear_extensions(cover_relation):
     G = nx.DiGraph()
@@ -86,8 +88,16 @@ def k_poset_cover(upsilon, k):
                 print("P_i", P_i)
                 Pstar_total.append(P_i)
     
-    Pfinal, LOfinal = find_covering_poset(Pstar_total, upsilon)
-    return Pfinal, LOfinal
+    P, L = find_covering_poset(Pstar_total, upsilon)
+    if P and L:
+        for i in range(len(L) - k):
+            if sorted(set(chain.from_iterable(L[i:i+k]))) == sorted(upsilon):
+                Pfinal = P[i:i+k]
+                LOfinal = L[i:i+k]
+                return Pfinal, LOfinal
+    else:
+        return None, None
+    
 
 def main():
     sample_input = [
@@ -95,9 +105,21 @@ def main():
     ]
     k = 3
     Pfinal, LOfinal = k_poset_cover(sample_input, k)
+
+    print(f"Input: {sample_input}")
     
-    print("Final posets:", Pfinal)
-    print("Linear Orders Covered:", LOfinal)
+    if Pfinal and LOfinal:
+        print("Final posets:")
+        for i in Pfinal:
+            print(i)
+        print("Linear Orders Covered:")
+        for i in LOfinal:
+            print(i)
+    else:
+        print('it no work :<')
+    
+    # print("Final posets:", Pfinal)
+    # print("Linear Orders Covered:", LOfinal)
 
 if __name__ == "__main__":
     main()
