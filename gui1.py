@@ -87,7 +87,7 @@ def submit_input():
 
             for k in range(len(linear_orders)):
                 highlight_button = tk.Button(right_frame, text=f"Show P{k+1}", command=lambda k=k: highlight_graph(data, linear_orders[k], colors[k % len(colors)]))
-                highlight_button.pack(pady=10)
+                highlight_button.pack(pady=5)
         else:
             right_text.insert(tk.END, f"No k posets found for the input")
     else:
@@ -160,13 +160,13 @@ def create_gui():
 
     # Create plot frame for middle column
     plot_frame = tk.Frame(main_frame)
-    plot_frame.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
+    plot_frame.grid(row=0, column=1, sticky="nsew", padx=5, pady=5)
 
     # Create right column frame for text display
     right_frame = tk.Frame(main_frame, bg="darkgray")
-    right_frame.grid(row=0, column=2, sticky="nsew", padx=10, pady=10)
-    right_text = tk.Text(right_frame, height=30, width=20, bg="darkgray", fg="white")
-    right_text.pack(pady=10)
+    right_frame.grid(row=0, column=2, sticky="nsew", padx=3, pady=3)
+    right_text = tk.Text(right_frame, height=20, width=20, bg="darkgray", fg="white")
+    right_text.pack(pady=5)
 
     # Configure grid weights
     main_frame.columnconfigure(0, weight=1)
