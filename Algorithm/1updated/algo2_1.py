@@ -41,6 +41,7 @@ def maximalPoset(upsilon, P_A, A):
 
     print("Start Node:", start_node)
     """
+    blacklist = []
     while(1):
         # Find neighbors of elements in Y_cov that are not yet in Y_cov
         # Finding mirror
@@ -49,7 +50,7 @@ def maximalPoset(upsilon, P_A, A):
         for linear_ext in Y_cov:
             neighbors = Neighbors.get(linear_ext, [])
             for neighbor in neighbors:
-                if neighbor not in Y_cov:
+                if neighbor not in Y_cov and neighbor not in blacklist:
                     #print(f"Found neighbor {neighbor} of linear extension {linear_ext} not yet in Y_cov")
                     swap = check_swap(linear_ext, neighbor)
                     #print(f"Result of check_swap between {linear_ext} and {neighbor}: {swap}")
@@ -75,17 +76,16 @@ def maximalPoset(upsilon, P_A, A):
             if i in upsilon:
                 temp_cov.append(i)
         print(f"Y_cov: {Y_cov}")
-        print(f"Y_cov, if extended: {list(set(Y_cov).union(set(temp_cov)))}")
         if sorted(get_linear_extensions(generatePoset(list(set(Y_cov).union(set(temp_cov)))))) == sorted(list(set(Y_cov).union(set(temp_cov)))):
             Y_cov = list(set(Y_cov).union(set(temp_cov)))
             print(f"Y_cov, after extending: {sorted(Y_cov)}\n")
         else:
-            print(f"Poset of extended Y_cov: {generatePoset(list(set(Y_cov).union(set(temp_cov))))}")
-            print(f"Linear orders of extended Y_cov do not match extended Y_cov:")
-            print(f"Extended Y_cov: {sorted(list(set(Y_cov).union(set(temp_cov))))}")
-            print(F"LEs of extended Y_cov: {sorted(get_linear_extensions(generatePoset(list(set(Y_cov).union(set(temp_cov))))))}")
-            print("IZ WRONG!!!!!!!!!!!!!!!!!\n")
-            break
+            for i in temp_cov:
+                if sorted(get_linear_extensions(generatePoset(Y_cov + [i]))) == sorted(Y_cov + [i]):
+                    Y_cov.append(i)
+                    print(f"Y_cov, after extending: {sorted(Y_cov)}\n")
+                else:
+                    blacklist.append(i)
     
     print(f"Y_cov: {Y_cov}")
 
@@ -113,9 +113,9 @@ def main():
     P_A = [(1, 2), (1, 3), (1, 4), (1, 5), (2, 4), (3, 2), (3, 4), (3, 5), (5, 2), (5, 4)]
     A = ((5, 2), (2, 4))
     """
-    P_A = [(1, 2), (1, 3), (1, 4), (1, 5), (3, 5), (3, 2), (3, 4), (5, 2), (5, 4), (2, 4)]
+    P_A = [(1, 2), (1, 3), (1, 4), (1, 5), (2, 5), (2, 3), (2, 4), (5, 3), (5, 4), (3, 4)]
     
-    A = ((5, 2), (2, 4))
+    A = ((5, 3), (5, 4))
     
     output = maximalPoset(sample_input, P_A, A)
     for poset in output:
