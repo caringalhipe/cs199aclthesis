@@ -56,11 +56,12 @@ def redraw(event):
 
 #First line of input N is the number of linear orders
 #Following N lines are the linear orders to be displayed as a permutohedron
-inp = []
-N = int(input())
-for i in range(N):
-      inp.append(input().strip())
-      
-poset = ['153624', '135624', '315624', '315264', '135264', '153264']
-      
-draw_atg(inp, N, poset, '#33CAFF', '#33CAFF')
+if __name__ == "__main__":
+      inp = []
+      N = int(input())
+      for i in range(N):
+            inp.append(input().strip())
+            
+      poset = ['153624', '135624', '315624', '315264', '135264', '153264']
+            
+      draw_atg(inp, N, poset, '#33CAFF', '#33CAFF')
