@@ -84,6 +84,7 @@ def submit_input():
     if len(data) > 0 and k.isnumeric() and int(k) > 0:
         
         output = k_poset_cover(data, k, G)
+        print(output)
         
         if output:
             posets, linear_orders = output
@@ -98,7 +99,7 @@ def submit_input():
                 highlight_button = tk.Button(right_frame, text=f"Show P{k+1}", command=lambda k=k: highlight_graph(data, linear_orders[k], colors[k % len(colors)]))
                 highlight_button.pack(pady=5)
         else:
-            right_text.insert(tk.END, f"No k posets found for the input")
+            right_text.insert(tk.END, f"No k={k} posets found for the input")
     else:
         messagebox.showerror('Invalid input', 'Please enter a valid value of k')
 
