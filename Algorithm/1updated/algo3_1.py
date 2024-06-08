@@ -5,7 +5,7 @@ import networkx as nx
 import random
 from collections import defaultdict, OrderedDict
 import itertools
-from gui1 import check_swap
+from permutohedron import check_swap
 from algo1 import generatePoset
 from algo3_2 import find_covering_poset
 from algo2_1 import maximalPoset
@@ -49,15 +49,16 @@ def group_anchors(anchors, k):
 def covers_upsilon(linear_orders, Upsilon):
     return set(Upsilon).issubset(set(linear_orders))
 
-def k_poset_cover(upsilon, k):
-    G = nx.Graph()
-    N = len(upsilon)
-    for i in range(N):
-        G.add_node(upsilon[i])
-        for j in range(i+1, N):
-            adjacent = check_swap(upsilon[i], upsilon[j])
-            if adjacent:
-                G.add_edge(upsilon[i], upsilon[j], label=adjacent, color='k')
+def k_poset_cover(upsilon, k, G):
+    # G = nx.Graph()
+    # N = len(upsilon)
+    # for i in range(N):
+    #     G.add_node(upsilon[i])
+    #     for j in range(i+1, N):
+    #         adjacent = check_swap(upsilon[i], upsilon[j])
+    #         if adjacent:
+    #             G.add_edge(upsilon[i], upsilon[j], label=adjacent, color='k')
+    k = int(k)
     
     anchors = find_anchors(G)
     grouped_anchors = group_anchors(anchors, k)
@@ -85,7 +86,7 @@ def k_poset_cover(upsilon, k):
             Pstar.append(P_A)
             if P_A:
                 P_i = maximalPoset(upsilon, P_A, A)
-                print("P_i", P_i)
+                #print("P_i", P_i)
                 Pstar_total.append(P_i)
     
     P, L = find_covering_poset(Pstar_total, upsilon)
@@ -104,9 +105,17 @@ def main():
         '12453', '12345', '13425', '13524', '12354', '12534', '12435', '14523', '14235', '13254', '13245', '14253'
     ]
     k = 3
-    Pfinal, LOfinal = k_poset_cover(sample_input, k)
+    G = nx.Graph()
+    N = len(sample_input)
+    for i in range(N):
+        G.add_node(sample_input[i])
+        for j in range(i+1, N):
+            adjacent = check_swap(sample_input[i], sample_input[j])
+            if adjacent:
+                G.add_edge(sample_input[i], sample_input[j], label=adjacent, color='k')
+    Pfinal, LOfinal = k_poset_cover(sample_input, k, G)
 
-    print(f"Input: {sample_input}")
+    print(f"Input: {sorted(sample_input)}")
     
     if Pfinal and LOfinal:
         print("Final posets:")
@@ -115,6 +124,7 @@ def main():
         print("Linear Orders Covered:")
         for i in LOfinal:
             print(i)
+        print(f"Output: {sorted(set(chain.from_iterable(LOfinal)))}")
     else:
         print('it no work :<')
     

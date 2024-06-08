@@ -4,6 +4,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import networkx as nx
 import matplotlib.pyplot as plt
 from random import shuffle
+from algo3_1 import k_poset_cover
 
 #import algo3 and kposet functions
 
@@ -68,19 +69,27 @@ def load_from_file():
 # Submit input from textbox
 def submit_input():
     global data, k
+    right_text.delete('1.0', tk.END)
     data = input_textbox.get("1.0", tk.END).strip().split("\n")
     k = k_textbox.get("1.0", tk.END).strip()
     display_graph(data)
     ### ALGO WILL RUN WHEN SUBMIT BUTTON IS PRESSED ###
     if len(data) > 0 and k.isnumeric() and int(k) > 0:
         
-        posets = k_poset(data)
+        posets, linear_orders = k_poset_cover(data, k, G)
         
-        colors = ['r', 'g', 'b', 'c','m','y']
-    
-        for k in range(len(posets)):
-            highlight_button = tk.Button(right_frame, text=f"Show P{k+1}", command=lambda k=k: highlight_graph(data, posets[k], colors[k % len(colors)]))
-            highlight_button.pack(pady=10)
+        if posets and linear_orders:
+            right_text.insert(tk.END, f"{k} posets found for the input:\n")
+            for k in range(len(posets)):
+                right_text.insert(tk.END, f"P{k+1}: {posets[k]}\n")
+            
+            colors = ['r', 'g', 'b', 'c','m','y']
+
+            for k in range(len(linear_orders)):
+                highlight_button = tk.Button(right_frame, text=f"Show P{k+1}", command=lambda k=k: highlight_graph(data, linear_orders[k], colors[k % len(colors)]))
+                highlight_button.pack(pady=10)
+        else:
+            right_text.insert(tk.END, f"No k posets found for the input")
     else:
         messagebox.showerror('Invalid input', 'Please enter a valid value of k')
 
@@ -127,20 +136,10 @@ def highlight_graph(data, poset, poset_color):
     canvas = FigureCanvasTkAgg(fig, master=plot_frame)
     canvas.draw()
     canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-    
-### define kposet function here
-def k_poset(data):
-    # magic algo return the posets
-    posets = [['14523', '14235', '12453', '12435', '12345', '14253'],
-                               ['12435', '12345', '13245', '13254', '13524', '12354'],
-                               ['12345', '13245', '13254', '13425', '12354', '12534']]
-    
-    return posets
-###
 
 # Create the GUI
 def create_gui():
-    global input_textbox, plot_frame, k_textbox, right_frame
+    global input_textbox, plot_frame, k_textbox, right_frame, right_text
 
     root = tk.Tk()
     root.title("Poset Visualizer")
