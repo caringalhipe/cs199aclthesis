@@ -68,17 +68,26 @@ def load_from_file():
 
 # Submit input from textbox
 def submit_input():
-    global data, k
+    global data, k, right_frame, right_text
     right_text.delete('1.0', tk.END)
     data = input_textbox.get("1.0", tk.END).strip().split("\n")
     k = k_textbox.get("1.0", tk.END).strip()
     display_graph(data)
+    if has_submitted:
+        for widget in right_frame.winfo_children():
+            widget.destroy()
+        right_frame = tk.Frame(main_frame, bg="darkgray")
+        right_frame.grid(row=0, column=2, sticky="nsew", padx=10, pady=10)
+        right_text = tk.Text(right_frame, height=30, width=20, bg="darkgray", fg="white")
+        right_text.pack(pady=10)
     ### ALGO WILL RUN WHEN SUBMIT BUTTON IS PRESSED ###
     if len(data) > 0 and k.isnumeric() and int(k) > 0:
         
-        posets, linear_orders = k_poset_cover(data, k, G)
+        output = k_poset_cover(data, k, G)
         
-        if posets and linear_orders:
+        if output:
+            posets, linear_orders = output
+            
             right_text.insert(tk.END, f"{k} posets found for the input:\n")
             for k in range(len(posets)):
                 right_text.insert(tk.END, f"P{k+1}: {posets[k]}\n")
@@ -95,11 +104,13 @@ def submit_input():
 
 # Display graph based on input data
 def display_graph(data):
-    global canvas
+    global canvas, has_submitted
 
     # Clear previous plot
     for widget in plot_frame.winfo_children():
         widget.destroy()
+        
+    has_submitted = 1
 
     fig = process_input(data)
     
@@ -139,7 +150,7 @@ def highlight_graph(data, poset, poset_color):
 
 # Create the GUI
 def create_gui():
-    global input_textbox, plot_frame, k_textbox, right_frame, right_text
+    global input_textbox, plot_frame, k_textbox, right_frame, right_text, main_frame
 
     root = tk.Tk()
     root.title("Poset Visualizer")
