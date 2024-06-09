@@ -97,7 +97,7 @@ def exact_k_poset_cover(upsilon, k, G):
                 LOfinal = L[i:i+k]
                 return Pfinal, LOfinal
     else:
-        return None, None
+        return None
     
 
 def main():
