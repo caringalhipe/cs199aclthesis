@@ -49,22 +49,14 @@ def group_anchors(anchors, k):
 def covers_upsilon(linear_orders, Upsilon):
     return set(Upsilon).issubset(set(linear_orders))
 
-def exact_k_poset_cover(upsilon, k, G):
-    # G = nx.Graph()
-    # N = len(upsilon)
-    # for i in range(N):
-    #     G.add_node(upsilon[i])
-    #     for j in range(i+1, N):
-    #         adjacent = check_swap(upsilon[i], upsilon[j])
-    #         if adjacent:
-    #             G.add_edge(upsilon[i], upsilon[j], label=adjacent, color='k')
+def k_poset_cover(upsilon, k, G):
     k = int(k)
     
     anchors = find_anchors(G)
     grouped_anchors = group_anchors(anchors, k)
     Pstar = []
     Pstar_total = []
-    # Initialize outside the loop
+    
     for A in grouped_anchors:
         Upsilon_A = []
         
@@ -86,19 +78,38 @@ def exact_k_poset_cover(upsilon, k, G):
             Pstar.append(P_A)
             if P_A:
                 P_i = maximalPoset(upsilon, P_A, A)
-                #print("P_i", P_i)
                 Pstar_total.append(P_i)
     
     P, L = find_covering_poset(Pstar_total, upsilon)
     if P and L:
-        for i in range(len(L) - k):
-            if sorted(set(chain.from_iterable(L[i:i+k]))) == sorted(upsilon):
-                Pfinal = P[i:i+k]
-                LOfinal = L[i:i+k]
-                return Pfinal, LOfinal
+        covered_orders = set()
+        Pfinal = []
+        LOfinal = []
+        unique_posets = set()
+
+        for i in range(len(L)):
+            if len(Pfinal) >= k:
+                break
+
+            poset_tuple = tuple(map(tuple, P[i]))
+            if poset_tuple not in unique_posets:
+                unique_posets.add(poset_tuple)
+                Pfinal.append(P[i])
+                LOfinal.append(L[i])
+                covered_orders.update(L[i])
+
+                # Check if the current set of covered orders matches upsilon
+                if sorted(covered_orders) == sorted(upsilon):
+                    return Pfinal, LOfinal
+
+        # In case the loop completes and we still need to check the coverage
+        if sorted(covered_orders) == sorted(upsilon):
+            return Pfinal, LOfinal
     else:
         return None, None
+
     
+    return Pfinal, LOfinal
 
 def main():
     
@@ -117,7 +128,8 @@ def main():
             adjacent = check_swap(sample_input[i], sample_input[j])
             if adjacent:
                 G.add_edge(sample_input[i], sample_input[j], label=adjacent, color='k')
-    Pfinal, LOfinal = exact_k_poset_cover(sample_input, k, G)
+    
+    Pfinal, LOfinal = k_poset_cover(sample_input, k, G)
 
     print(f"Input: {sorted(sample_input)}")
     
@@ -131,9 +143,6 @@ def main():
         print(f"Output: {sorted(set(chain.from_iterable(LOfinal)))}")
     else:
         print('it no work :<')
-    
-    # print("Final posets:", Pfinal)
-    # print("Linear Orders Covered:", LOfinal)
 
 if __name__ == "__main__":
     main()

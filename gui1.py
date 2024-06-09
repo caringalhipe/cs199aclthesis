@@ -4,7 +4,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import networkx as nx
 import matplotlib.pyplot as plt
 from random import shuffle
-from algo3_1 import k_poset_cover
+from algo3_1 import exact_k_poset_cover
 
 #import algo3 and kposet functions
 
@@ -76,7 +76,7 @@ def submit_input():
     ### ALGO WILL RUN WHEN SUBMIT BUTTON IS PRESSED ###
     if len(data) > 0 and k.isnumeric() and int(k) > 0:
         
-        posets, linear_orders = k_poset_cover(data, k, G)
+        posets, linear_orders = exact_k_poset_cover(data, k, G)
         
         if posets and linear_orders:
             right_text.insert(tk.END, f"{k} posets found for the input:\n")

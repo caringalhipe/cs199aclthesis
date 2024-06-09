@@ -90,7 +90,7 @@ count_posets = len(covered_groups_LE)
 
 #generate all possible groups of posets
 max_k = int(args[1])
-for i in range(2, max_k + 1): #end shoud be count_one_posets + 1
+for i in range(2, max_k + 1): #end should be count_one_posets + 1
     k = i
 
     unprocessed_combinations_of_posets = combinations(Posets, i)
