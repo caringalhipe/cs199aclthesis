@@ -112,38 +112,55 @@ def k_poset_cover(upsilon, k, G):
     return Pfinal, LOfinal
 
 def main():
-    """
-    sample_input = [
-        '12453', '12345', '13425', '13524', '12354', '12534', '12435', '14523', '14235', '13254', '13245', '14253'
-    ]
-    
-    sample_input = ['3124', '3142', '3214', '3241', '3412', '3421', '4123', '4132', '4213', '4231', '4312', '4321']
-    """
-    sample_input = ['3124', '3142', '3214', '3241', '3412', '3421']
-    k = 2
-    G = nx.Graph()
-    N = len(sample_input)
-    for i in range(N):
-        G.add_node(sample_input[i])
-        for j in range(i+1, N):
-            adjacent = check_swap(sample_input[i], sample_input[j])
-            if adjacent:
-                G.add_edge(sample_input[i], sample_input[j], label=adjacent, color='k')
-    
-    Pfinal, LOfinal = k_poset_cover(sample_input, k, G)
+    args = sys.argv[1:]
+    if len(args) != 2:
+        print("Usage: python algorithm3_4.py <input_file> <k>")
+        return
 
-    print(f"Input: {sorted(sample_input)}")
-    
-    if Pfinal and LOfinal:
-        print("Final posets:")
-        for i in Pfinal:
-            print(i)
-        print("Linear Orders Covered:")
-        for i in LOfinal:
-            print(i)
-        print(f"Output: {sorted(set(chain.from_iterable(LOfinal)))}")
+    input_file_id = args[0]
+    k = int(args[1])
+
+    input_file_path = f'optsol/inputs/{input_file_id}posetsinput.txt'
+    output_file_path = f'outputs/output_{input_file_id}.txt'
+    count = 1
+
+    if not os.path.exists("outputs/"):
+        os.makedirs("outputs/")
+
+    with open(input_file_path, 'r') as input_file, open(output_file_path, 'w') as output_file:
+        for line in input_file:  # work on each test case
+            print(count)
+            count += 1
+            inputLinearOrders = [x.strip() for x in line.strip('[]\n').split(',')]
+
+            inputLinearOrders.sort()
+            inputLinearOrders = [str(item) for item in inputLinearOrders]
+
+            G = nx.Graph()
+            N = len(inputLinearOrders)
+            for i in range(N):
+                G.add_node(inputLinearOrders[i])
+                for j in range(i + 1, N):
+                    adjacent = check_swap(inputLinearOrders[i], inputLinearOrders[j])
+                    if adjacent:
+                        G.add_edge(inputLinearOrders[i], inputLinearOrders[j], label=adjacent, color='k')
+            
+            Pfinal, LOfinal = k_poset_cover(inputLinearOrders, k, G)
+            
+            if Pfinal:
+                output_file.write(f"Input: {[int(x) for x in inputLinearOrders]}\n")
+                for i in range(len(Pfinal)):
+                    output_file.write(f"P{str(i + 1)}: {Pfinal[i]}\n")
+                output_file.write("\n")
+            else:
+                output_file.write(f"Input: {[int(x) for x in inputLinearOrders]}\n")
+                output_file.write("None!!!!!\n\n")
+
+    if Pfinal:
+        print(f"Generated all output of input linear order sets with {args[0]} vertices")
+        print("Check 'outputs' directory")
     else:
-        print('it no work :<')
+        print("Generated nothing")
 
 if __name__ == "__main__":
     main()
