@@ -88,7 +88,6 @@ def submit_input(optimal):
             output = exact_k_poset_cover(data, k, G)
         else:
             output = k_poset_cover(data, k, G)
-        print(output)
         
         if output:
             posets, linear_orders = output
