@@ -4,7 +4,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import networkx as nx
 import matplotlib.pyplot as plt
 from random import shuffle
-from algo3_3 import k_poset_cover
+from algo3_4 import k_poset_cover
 
 #import algo3 and kposet functions
 
@@ -89,7 +89,7 @@ def submit_input():
         if output:
             posets, linear_orders = output
             
-            right_text.insert(tk.END, f"{k} posets found for the input:\n")
+            right_text.insert(tk.END, f"{len(linear_orders)} posets found for the input:\n")
             for k in range(len(posets)):
                 right_text.insert(tk.END, f"P{k+1}: {posets[k]}\n")
             
@@ -99,7 +99,7 @@ def submit_input():
                 highlight_button = tk.Button(right_frame, text=f"Show P{k+1}", command=lambda k=k: highlight_graph(data, linear_orders[k], colors[k % len(colors)]))
                 highlight_button.pack(pady=5)
         else:
-            right_text.insert(tk.END, f"No k={k} posets found for the input")
+            right_text.insert(tk.END, f"No k<={k} posets found for the input")
     else:
         messagebox.showerror('Invalid input', 'Please enter a valid value of k')
 

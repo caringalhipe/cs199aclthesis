@@ -106,7 +106,7 @@ def k_poset_cover(upsilon, k, G):
         if sorted(covered_orders) == sorted(upsilon):
             return Pfinal, LOfinal
     else:
-        return None, None
+        return None
 
     
     return Pfinal, LOfinal

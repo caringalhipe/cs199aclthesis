@@ -42,9 +42,9 @@ def draw_atg(inp, N, poset = [], node_color = 'pink', edge_color = 'k'):
       nx.draw_networkx_edge_labels(G, pos, edge_labels=nx.get_edge_attributes(G,'label'))
       
       #Button to redraw the graph in case the output looks wonky
-      baxes = plt.axes([0.85, 0.05, 0.1, 0.05])
-      redraw_button = Button(baxes, 'Redraw')
-      redraw_button.on_clicked(redraw)
+      # baxes = plt.axes([0.85, 0.05, 0.1, 0.05])
+      # redraw_button = Button(baxes, 'Redraw')
+      # redraw_button.on_clicked(redraw)
       
       plt.show()
       plt.draw()
