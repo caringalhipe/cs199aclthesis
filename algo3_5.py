@@ -92,12 +92,11 @@ def exact_k_poset_cover(upsilon, k, G):
         
         P, L = find_covering_poset(Pstar_total, upsilon)
         if P and L:
-            for i in range(len(L) - k):
-                if sorted(set(chain.from_iterable(L[i:i+k]))) == sorted(upsilon):
-                    Pfinal = P[i:i+k]
-                    LOfinal = L[i:i+k]
+            for q in range(len(L) - i):
+                if sorted(set(chain.from_iterable(L[q:q+i]))) == sorted(upsilon):
+                    Pfinal = P[q:q+i]
+                    LOfinal = L[q:q+i]
                     return Pfinal, LOfinal
-            break
     else:
         return None
     

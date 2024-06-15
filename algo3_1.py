@@ -49,7 +49,7 @@ def group_anchors(anchors, k):
 def covers_upsilon(linear_orders, Upsilon):
     return set(Upsilon).issubset(set(linear_orders))
 
-def exact_k_poset_cover(upsilon, k, G):
+def k_poset_cover(upsilon, k, G):
     # G = nx.Graph()
     # N = len(upsilon)
     # for i in range(N):
