@@ -5,7 +5,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from random import shuffle
 from algo3_1 import k_poset_cover
-from algo3_5 import exact_k_poset_cover
+from algo3_3 import exact_k_poset_cover
 
 #import algo3 and kposet functions
 
@@ -79,7 +79,7 @@ def submit_input(optimal):
             widget.destroy()
         right_frame = tk.Frame(main_frame, bg="darkgray")
         right_frame.grid(row=0, column=2, sticky="nsew", padx=10, pady=10)
-        right_text = tk.Text(right_frame, height=30, width=20, bg="darkgray", fg="white")
+        right_text = tk.Text(right_frame, height=20, width=25, bg="darkgray", fg="black")
         right_text.pack(pady=10)
     ### ALGO WILL RUN WHEN SUBMIT BUTTON IS PRESSED ###
     if len(data) > 0 and k.isnumeric() and int(k) > 0:
@@ -100,7 +100,7 @@ def submit_input(optimal):
 
             for k in range(len(linear_orders)):
                 highlight_button = tk.Button(right_frame, text=f"Show P{k+1}", command=lambda k=k: highlight_graph(data, linear_orders[k], colors[k % len(colors)]))
-                highlight_button.pack(pady=5)
+                highlight_button.pack(pady=3)
         else:
             right_text.insert(tk.END, f"No k={k} posets found for the input")
     else:
@@ -180,8 +180,8 @@ def create_gui():
     # Create right column frame for text display
     right_frame = tk.Frame(main_frame, bg="darkgray")
     right_frame.grid(row=0, column=2, sticky="nsew", padx=3, pady=3)
-    right_text = tk.Text(right_frame, height=20, width=20, bg="darkgray", fg="white")
-    right_text.pack(pady=5)
+    right_text = tk.Text(right_frame, height=20, width=25, bg="darkgray", fg="black")
+    right_text.pack(pady=3)
 
     # Configure grid weights
     main_frame.columnconfigure(0, weight=1)
