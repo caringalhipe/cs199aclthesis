@@ -4,7 +4,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import networkx as nx
 import matplotlib.pyplot as plt
 from random import shuffle
-from algo3_5 import exact_k_poset_cover
+from algo3_3 import exact_k_poset_cover
 
 #import algo3 and kposet functions
 

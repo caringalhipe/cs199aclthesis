@@ -8,7 +8,7 @@ import itertools
 from permutohedron import check_swap
 from algo1 import generatePoset
 from algo3_2 import find_covering_poset
-from algo2_1 import maximalPoset
+from algo2 import maximalPoset
 from itertools import chain
 from random import sample
 
@@ -62,7 +62,6 @@ def k_poset_cover(upsilon, k, G):
     
     anchors = find_anchors(G)
     grouped_anchors = group_anchors(anchors, k)
-    Pstar = []
     Pstar_total = []
     # Initialize outside the loop
     for A in grouped_anchors:
@@ -83,7 +82,6 @@ def k_poset_cover(upsilon, k, G):
                 Upsilon_A.append(sequence)
         if Upsilon_A:
             P_A = generatePoset(Upsilon_A)
-            Pstar.append(P_A)
             if P_A:
                 P_i = maximalPoset(upsilon, P_A, A)
                 #print("P_i", P_i)

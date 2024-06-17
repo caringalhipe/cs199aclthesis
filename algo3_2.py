@@ -31,7 +31,7 @@ def find_covering_poset(Pstar, Upsilon):
 
     if not Pfinal:
         #print("No covering poset found.")
-        return None, None
+        return None
         
     
     return Pfinal, LOfinal

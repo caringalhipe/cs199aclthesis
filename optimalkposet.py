@@ -1,16 +1,11 @@
 import os
 import sys
-from itertools import combinations
+from itertools import combinations, chain
 import networkx as nx
-import random
-from collections import defaultdict, OrderedDict
-import itertools
 from permutohedron import check_swap
 from algo1 import generatePoset
 from algo3_2 import find_covering_poset
-from algo2_1 import maximalPoset
-from itertools import chain
-from random import sample
+from algo2 import maximalPoset
 
 def get_linear_extensions(cover_relation):
     G = nx.DiGraph()
@@ -44,77 +39,52 @@ def no_dupe(anchors):
     return True
 
 def group_anchors(anchors, k):
-    return [combi for combi in itertools.combinations(anchors, k-1) if no_dupe(combi)]
+    return [combi for combi in combinations(anchors, k-1) if no_dupe(combi)]
 
 def covers_upsilon(linear_orders, Upsilon):
     return set(Upsilon).issubset(set(linear_orders))
 
-def k_poset_cover(upsilon, k, G):
+def exact_k_poset_cover(upsilon, k, G):
     k = int(k)
-    
     anchors = find_anchors(G)
-    grouped_anchors = group_anchors(anchors, k)
-    Pstar = []
-    Pstar_total = []
-    
-    for A in grouped_anchors:
-        Upsilon_A = []
-        
-        for sequence in upsilon:
-            satisfies = True
-            for anchor in A:
-                a, b = str(anchor[0]), str(anchor[1])
-                if a in sequence and b in sequence:
-                    if sequence.index(a) > sequence.index(b):
+    for i in range(1, k+1):
+        grouped_anchors = group_anchors(anchors, k)
+        Pstar_total = []
+        for A in grouped_anchors:
+            Upsilon_A = []
+            for sequence in upsilon:
+                satisfies = True
+                for anchor in A:
+                    a, b = str(anchor[0]), str(anchor[1])
+                    if a in sequence and b in sequence:
+                        if sequence.index(a) > sequence.index(b):
+                            satisfies = False
+                            break
+                    else:
                         satisfies = False
                         break
-                else:
-                    satisfies = False
-                    break
-            if satisfies:
-                Upsilon_A.append(sequence)
-        if Upsilon_A:
-            P_A = generatePoset(Upsilon_A)
-            Pstar.append(P_A)
-            if P_A:
-                P_i = maximalPoset(upsilon, P_A, A)
-                Pstar_total.append(P_i)
-    
-    P, L = find_covering_poset(Pstar_total, upsilon)
-    if P and L:
-        covered_orders = set()
-        Pfinal = []
-        LOfinal = []
-        unique_posets = set()
-
-        for i in range(len(L)):
-            if len(Pfinal) >= k:
-                break
-
-            poset_tuple = tuple(map(tuple, P[i]))
-            if poset_tuple not in unique_posets:
-                unique_posets.add(poset_tuple)
-                Pfinal.append(P[i])
-                LOfinal.append(L[i])
-                covered_orders.update(L[i])
-
-                # Check if the current set of covered orders matches upsilon
-                if sorted(covered_orders) == sorted(upsilon):
+                if satisfies:
+                    Upsilon_A.append(sequence)
+            if Upsilon_A:
+                P_A = generatePoset(Upsilon_A)
+                if P_A:
+                    P_i = maximalPoset(upsilon, P_A, A)
+                    Pstar_total.append(P_i)
+        
+        result = find_covering_poset(Pstar_total, upsilon)
+        if result:
+            P, L = result
+            for q in range(len(L) - i):
+                if sorted(set(chain.from_iterable(L[q:q+i]))) == sorted(upsilon):
+                    Pfinal = P[q:q+i]
+                    LOfinal = L[q:q+i]
                     return Pfinal, LOfinal
-
-        # In case the loop completes and we still need to check the coverage
-        if sorted(covered_orders) == sorted(upsilon):
-            return Pfinal, LOfinal
-    else:
-        return None
-
-    
-    return Pfinal, LOfinal
+    return None
 
 def main():
     args = sys.argv[1:]
     if len(args) != 2:
-        print("Usage: python algorithm3_4.py <input_file> <k>")
+        print("Usage: python optimalkposet.py <input_file> <k>")
         return
 
     input_file_id = args[0]
@@ -128,11 +98,10 @@ def main():
         os.makedirs("outputs/")
 
     with open(input_file_path, 'r') as input_file, open(output_file_path, 'w') as output_file:
-        for line in input_file:  # work on each test case
+        for line in input_file:
             print(count)
             count += 1
             inputLinearOrders = [x.strip() for x in line.strip('[]\n').split(',')]
-
             inputLinearOrders.sort()
             inputLinearOrders = [str(item) for item in inputLinearOrders]
 
@@ -145,22 +114,20 @@ def main():
                     if adjacent:
                         G.add_edge(inputLinearOrders[i], inputLinearOrders[j], label=adjacent, color='k')
             
-            Pfinal, LOfinal = k_poset_cover(inputLinearOrders, k, G)
+            result = exact_k_poset_cover(inputLinearOrders, k, G)
             
-            if Pfinal:
+            if result:
+                Pfinal, LOfinal = result
                 output_file.write(f"Input: {[int(x) for x in inputLinearOrders]}\n")
                 for i in range(len(Pfinal)):
                     output_file.write(f"P{str(i + 1)}: {Pfinal[i]}\n")
                 output_file.write("\n")
             else:
                 output_file.write(f"Input: {[int(x) for x in inputLinearOrders]}\n")
-                output_file.write("None!!!!!\n\n")
+                output_file.write("None!\n\n")
 
-    if Pfinal:
-        print(f"Generated all output of input linear order sets with {args[0]} vertices")
-        print("Check 'outputs' directory")
-    else:
-        print("Generated nothing")
+    print(f"Processed {count-1} input cases.")
+    print("Check 'outputs' directory for results.")
 
 if __name__ == "__main__":
     main()
